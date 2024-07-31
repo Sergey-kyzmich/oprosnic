@@ -11,11 +11,10 @@ class database():
         db = sqlite3.connect("database.db")
         cursor = db.cursor()
         id = len(list(cursor.execute("SELECT id from opr")))+1
-        cursor.execute(f'INSERT INTO opr VALUES (?,?,?,?,?,?,?,?,?,?,?)', (
+        cursor.execute(f'INSERT INTO opr VALUES (?,?,?,?,?,?,?,?,?,?)', (
                                                              id, 
                                                              data["audio"],
                                                              data["year"],
-                                                             data["job"],
                                                              data["1"], 
                                                              data["2"], 
                                                              data["3"], 
@@ -37,7 +36,6 @@ class database():
         id INTEGER PRIMARY KEY,
         audio STRING,
         year STRING,
-        job STRING,
         opr1 STRING,
         opr2 STRING,
         opr3 STRING,
@@ -58,7 +56,8 @@ class database():
             if data[item]==None:
                 cursor.execute(f'''UPDATE opr SET {item} = NULL WHERE id = "{id}"''')
             else:
-                cursor.execute(f'''UPDATE opr SET {item} = '{data[item]}' WHERE id = "{id}"''')
+                print(f'''UPDATE opr SET {item if item not in ["1","2","3","4","5","6","7"] else "opr"+item} = '{data[item]}' WHERE id = "{id}"''')
+                cursor.execute(f'''UPDATE opr SET {item if item not in ["1","2","3","4","5","6","7"] else "opr"+item} = '{data[item]}' WHERE id = "{id}"''')
             db.commit()
         db.close()
     

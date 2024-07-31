@@ -29,7 +29,6 @@ def text_message_handler(message):
     except:log[message.chat.id]={
         "audio":None,
         "year":None,
-        "job":None,
         "1":None, 
         "2":None, 
         "3":None, 
@@ -81,7 +80,7 @@ def text_message_handler(message):
 @bot.callback_query_handler(func=lambda  callback: callback.data)
 def check_callback_data(callback):
     if callback.data=="end-opr":
-        save_log(callback)
+        end_1(callback.message)
     
     if callback.data[0]=="1":
         opr2(callback)
@@ -120,22 +119,6 @@ def check_callback_data(callback):
     
     if "edit_" in callback.data:
         edit_3(callback)
-
-def save_log(callback):
-    data=log[callback.message.chat.id]
-    db.add_data(data=data)
-    log[callback.message.chat.id]={
-        "audio":None,
-        "year":None,
-        "job":None,
-        "1":None, 
-        "2":None, 
-        "3":None, 
-        "4":None, 
-        "5":None, 
-        "6":None, 
-        "7":None,
-    }
 
 def opr2(callback):
     log[callback.message.chat.id]["1"]=callback.data[2:]
@@ -240,10 +223,19 @@ def opr7_message(message):
 def end_1(message):
     db.add_data(data=log[message.chat.id])
     l = db.len_db()
-    kb = InlineKeyboardMarkup()
-    b = InlineKeyboardButton(text="Продолжить", callback_data="to_end_2")
-    kb.add(b)
-    bot.send_message(chat_id=message.chat.id, text=f"<b>Опрос окончен! \nid записи: {l}\nНе заполненные поля: {[x for x in log[message.chat.id] if log[message.chat.id][x]==None]}</b>", reply_markup=kb, parse_mode="HTML")
+    bot.send_message(chat_id=message.chat.id, text=f"<b>Опрос окончен! \nid записи: {l}\nНе заполненные поля: {[x for x in log[message.chat.id] if log[message.chat.id][x]==None]}</b>", parse_mode="HTML")
+    
+    log[message.chat.id]={
+        "audio":None,
+        "year":None,
+        "1":None, 
+        "2":None, 
+        "3":None, 
+        "4":None, 
+        "5":None, 
+        "6":None, 
+        "7":None,
+    }
 
 def edit_1(message):
     edit_item[message.chat.id]={}
@@ -288,4 +280,3 @@ def edit_4(message):
 
     bot.send_message(chat_id=message.chat.id, text="<b>Изменено!</b>", parse_mode="HTML")
 bot.infinity_polling()
-
